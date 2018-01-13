@@ -18,7 +18,7 @@ namespace OMDbApiNet.Model
         public string Country { get; set; }
         public string Awards { get; set; }
         public string Poster { get; set; }
-        public Dictionary<string, string> Ratings { get; set; }
+        public List<Rating> Ratings { get; set; }
         public string Metascore { get; set; }
         public string ImdbRating { get; set; }
         public string ImdbVotes { get; set; }

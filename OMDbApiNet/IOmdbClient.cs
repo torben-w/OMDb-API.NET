@@ -4,6 +4,7 @@ namespace OMDbApiNet
 {
     public enum OmdbType
     {
+        None,
         Movie,
         Series
     }
@@ -14,18 +15,16 @@ namespace OMDbApiNet
         
         Item GetItemByTitle(string title, OmdbType type, bool fullPlot = false);
         
-        Item GetItemByTitle(string title, int? year, bool fullPlot = false);
+        Item GetItemByTitle(string title, uint? year, bool fullPlot = false);
         
-        Item GetItemByTitle(string title, OmdbType type, int? year, bool fullPlot = false);
+        Item GetItemByTitle(string title, OmdbType type, uint? year, bool fullPlot = false);
 
         Item GetItemById(string id, bool fullPlot = false);
 
-        SearchList GetSearchList(string query, int page = 1);
+        SearchList GetSearchList(string query, uint page = 1);
 
-        Episode GetEpisode(string seriesId, int seasonNumber, int episodeNumber);
+        Episode GetEpisode(string seriesId, uint seasonNumber, uint episodeNumber);
         
-        Season GetSeason(string seriesId, int seasonNumber);
-        
-        
+        Season GetSeason(string seriesId, uint seasonNumber);
     }
 }

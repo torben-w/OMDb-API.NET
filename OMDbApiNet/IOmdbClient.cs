@@ -22,6 +22,8 @@ namespace OMDbApiNet
         Item GetItemById(string id, bool fullPlot = false);
 
         SearchList GetSearchList(string query, uint page = 1);
+        
+        SearchList GetSearchList(string query, OmdbType type, uint page = 1);
 
         Episode GetEpisode(string seriesId, uint seasonNumber, uint episodeNumber);
         

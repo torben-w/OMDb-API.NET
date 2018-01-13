@@ -52,12 +52,12 @@ namespace OMDbApiNet
             
             if (year != null)
             {
-                query += year;
+                query += $"&y={year}";
             }
             
             if (type != OmdbType.None)
             {
-                query += type.ToString();
+                query += $"&type={type.ToString()}";
             }
 
             var item = GetOmdbData<Item>(query).Result;
@@ -73,12 +73,24 @@ namespace OMDbApiNet
 
         public SearchList GetSearchList(string query, uint page = 1)
         {
-            if (page < 1 || page > 100)
+            return GetSearchList(query, OmdbType.None, page);
+        }
+        
+        public SearchList GetSearchList(string query, OmdbType type, uint page = 1)
+        {
+            if (page == 0)
             {
                 throw new ArgumentOutOfRangeException();
             }
+            
+            var editedQuery = $"&s={Regex.Replace(query, @"\s+", "+")}&page={page}";
+            
+            if (type != OmdbType.None)
+            {
+                editedQuery += $"&type={type.ToString()}";
+            }
 
-            var searchList = GetOmdbData<SearchList>($"&s={query}&page={page}").Result;
+            var searchList = GetOmdbData<SearchList>(editedQuery).Result;
             return searchList;
         }
 
@@ -88,7 +100,7 @@ namespace OMDbApiNet
             {
                 throw new ArgumentOutOfRangeException();
             }
-            var episode = GetOmdbData<Episode>($"&i={seriesId}&season={seasonNumber}&episode{episodeNumber}").Result;
+            var episode = GetOmdbData<Episode>($"&i={seriesId}&season={seasonNumber}&episode={episodeNumber}").Result;
             return episode;
         }
 
@@ -121,6 +133,8 @@ namespace OMDbApiNet
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings
                 {
+                    MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+                    DateParseHandling = DateParseHandling.None,
                     Error = delegate(object sender, ErrorEventArgs args) 
                     { 
                         var currentError = args.ErrorContext.Error.Message;

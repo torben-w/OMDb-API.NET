@@ -149,7 +149,7 @@ namespace OMDbApiNet
 
         public Episode GetEpisodeBySeriesTitle(string seriesTitle, uint seasonNumber, uint episodeNumber)
         {
-            if (string.IsNullOrEmpty(seriesTitle))
+            if (string.IsNullOrWhiteSpace(seriesTitle))
             {
                 throw new ArgumentException("Value cannot be null or empty.", nameof(seriesTitle));
             }
@@ -274,17 +274,17 @@ namespace OMDbApiNet
         {
             string query;
 
-            if (seriesId != null && seriesTitle == null)
+            if (seriesId != null)
             {
                 query = $"&i={seriesId}";
             } 
-            else if (seriesTitle != null && seriesId == null)
+            else if (seriesTitle != null)
             {
                 query = $"&t={seriesTitle}";
             }
             else
             {
-                throw new ArgumentException();
+                throw new ArgumentNullException("Not both seriesId and seriesTitle can be null.");
             }
 
             query += $"&season={seasonNumber}";

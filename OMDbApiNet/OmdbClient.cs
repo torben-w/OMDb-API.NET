@@ -94,27 +94,29 @@ namespace OMDbApiNet
             return searchList;
         }
 
-        public Episode GetEpisode(string seriesId, uint seasonNumber, uint episodeNumber) 
+        public Episode GetEpisodeBySeriesId(string seriesId, uint seasonNumber, uint episodeNumber)
         {
-            if (seasonNumber == 0 || episodeNumber == 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            var episode = GetOmdbData<Episode>($"&i={seriesId}&season={seasonNumber}&episode={episodeNumber}").Result;
-            return episode;
+            return GetEpisode(seriesId, null, seasonNumber, episodeNumber);
         }
 
-        public Season GetSeason(string seriesId, uint seasonNumber)
+        public Episode GetEpisodeByTitle(string seriesTitle, uint seasonNumber, uint episodeNumber)
         {
-            if (seasonNumber == 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            var season = GetOmdbData<Season>($"&i={seriesId}&season={seasonNumber}").Result;
-            return season;
+            return GetEpisode(null, seriesTitle, seasonNumber, episodeNumber);
+        }
+
+        public Season GetSeasonBySeriesId(string seriesId, uint seasonNumber)
+        {
+            return GetSeason(seriesId, null, seasonNumber);
+        }
+        
+        public Season GetSeasonByTitle(string seriesTitle, uint seasonNumber)
+        {
+            return GetSeason(null, seriesTitle, seasonNumber);
         }
 
         #endregion
+        
+        #region Internal
 
         private async Task<T> GetOmdbData<T>(string query)
         {
@@ -143,5 +145,60 @@ namespace OMDbApiNet
                 });
             }
         }
+        
+        private Episode GetEpisode(string seriesId, string seriesTitle, uint seasonNumber, uint episodeNumber)
+        {
+            if (seasonNumber == 0 || episodeNumber == 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var query = GetSeasonEpisodeQuery(seriesId, seriesTitle, seasonNumber, episodeNumber);
+            
+            var episode = GetOmdbData<Episode>(query).Result;
+            return episode;
+        }
+
+        private Season GetSeason(string seriesId, string seriesTitle, uint seasonNumber)
+        {
+            if (seasonNumber == 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var query = GetSeasonEpisodeQuery(seriesId, seriesTitle, seasonNumber, null);
+            
+            var season = GetOmdbData<Season>(query).Result;
+            return season;
+        }
+
+        private static string GetSeasonEpisodeQuery(string seriesId, string seriesTitle, uint seasonNumber, uint? episodeNumber)
+        {
+            string query;
+
+            if (seriesId != null && seriesTitle == null)
+            {
+                query = $"&i={seriesId}";
+            } 
+            else if (seriesTitle != null && seriesId == null)
+            {
+                query = $"&t={seriesTitle}";
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+
+            query += $"&season={seasonNumber}";
+
+            if (episodeNumber != null)
+            {
+                query += $"&episode={episodeNumber}";
+            }
+
+            return query;
+        }
+        
+        #endregion
     }
 }

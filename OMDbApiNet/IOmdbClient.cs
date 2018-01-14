@@ -25,8 +25,12 @@ namespace OMDbApiNet
         
         SearchList GetSearchList(string query, OmdbType type, uint page = 1);
 
-        Episode GetEpisode(string seriesId, uint seasonNumber, uint episodeNumber);
+        Episode GetEpisodeBySeriesId(string seriesId, uint seasonNumber, uint episodeNumber);
         
-        Season GetSeason(string seriesId, uint seasonNumber);
+        Episode GetEpisodeByTitle(string seriesTitle, uint seasonNumber, uint episodeNumber);
+        
+        Season GetSeasonBySeriesId(string seriesId, uint seasonNumber);
+        
+        Season GetSeasonByTitle(string seriesTitle, uint seasonNumber);
     }
 }

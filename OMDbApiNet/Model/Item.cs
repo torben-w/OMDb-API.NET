@@ -110,7 +110,13 @@ namespace OMDbApiNet.Model
         [JsonProperty("Website")]
         public string Website { get; set; }
         
+        [JsonProperty("totalSeasons")]
+        public string TotalSeasons { get; set; }
+        
         [JsonProperty("Response")]
         public string Response { get; set; }
+        
+        [JsonProperty("Error")]
+        public string Error { get; set; }
     }
 }

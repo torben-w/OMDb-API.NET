@@ -61,28 +61,60 @@ namespace OMDbApiNet
             }
 
             var item = GetOmdbData<Item>(query).Result;
+
+            if (item.Response.Equals("False"))
+            {
+                throw new HttpRequestException(item.Error);
+            }
+            
             return item;
         }
 
         public Item GetItemById(string id, bool fullPlot = false)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(id));
+            }
+            
             var plot = fullPlot ? "full" : "short";
             var item = GetOmdbData<Item>($"&i={id}&plot={plot}").Result;
+            
+            if (item.Response.Equals("False"))
+            {
+                throw new HttpRequestException(item.Error);
+            }
+            
             return item;
         }
 
         public SearchList GetSearchList(string query, uint page = 1)
         {
-            return GetSearchList(query, OmdbType.None, page);
+            return GetSearchList(null, query, OmdbType.None, page);
         }
         
         public SearchList GetSearchList(string query, OmdbType type, uint page = 1)
         {
-            if (page == 0)
+            return GetSearchList(null, query, type, page);
+        }
+
+        public SearchList GetSearchList(uint? year, string query, uint page = 1U)
+        {
+            return GetSearchList(year, query, OmdbType.None, page);
+        }
+
+        public SearchList GetSearchList(uint? year, string query, OmdbType type, uint page = 1U)
+        {
+            if (string.IsNullOrWhiteSpace(query))
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(query));
             }
             
+            if (page == 0)
+            {
+                throw new ArgumentOutOfRangeException("Page has to be greater than zero.", nameof(page));
+            }
+
             var editedQuery = $"&s={Regex.Replace(query, @"\s+", "+")}&page={page}";
             
             if (type != OmdbType.None)
@@ -90,27 +122,75 @@ namespace OMDbApiNet
                 editedQuery += $"&type={type.ToString()}";
             }
 
+            if (year != null)
+            {
+                editedQuery += $"&y={year}";
+            }
+
             var searchList = GetOmdbData<SearchList>(editedQuery).Result;
+            
+            if (searchList.Response.Equals("False"))
+            {
+                throw new HttpRequestException(searchList.Error);
+            }
+            
             return searchList;
         }
 
         public Episode GetEpisodeBySeriesId(string seriesId, uint seasonNumber, uint episodeNumber)
         {
+            if (string.IsNullOrWhiteSpace(seriesId))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(seriesId));
+            }
+
             return GetEpisode(seriesId, null, seasonNumber, episodeNumber);
         }
 
-        public Episode GetEpisodeByTitle(string seriesTitle, uint seasonNumber, uint episodeNumber)
+        public Episode GetEpisodeBySeriesTitle(string seriesTitle, uint seasonNumber, uint episodeNumber)
         {
+            if (string.IsNullOrEmpty(seriesTitle))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(seriesTitle));
+            }
+
             return GetEpisode(null, seriesTitle, seasonNumber, episodeNumber);
+        }
+
+        public Episode GetEpisodeByEpisodeId(string episodeId)
+        {
+            if (string.IsNullOrWhiteSpace(episodeId))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(episodeId));
+            }
+
+            var episode = GetOmdbData<Episode>($"&i={episodeId}").Result;
+            
+            if (episode.Response.Equals("False"))
+            {
+                throw new HttpRequestException(episode.Error);
+            }
+            
+            return episode;
         }
 
         public Season GetSeasonBySeriesId(string seriesId, uint seasonNumber)
         {
+            if (string.IsNullOrWhiteSpace(seriesId))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(seriesId));
+            }
+
             return GetSeason(seriesId, null, seasonNumber);
         }
         
-        public Season GetSeasonByTitle(string seriesTitle, uint seasonNumber)
+        public Season GetSeasonBySeriesTitle(string seriesTitle, uint seasonNumber)
         {
+            if (string.IsNullOrWhiteSpace(seriesTitle))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(seriesTitle));
+            }
+
             return GetSeason(null, seriesTitle, seasonNumber);
         }
 
@@ -125,7 +205,9 @@ namespace OMDbApiNet
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var response = await client.GetAsync($"{BaseUrl}apikey={_apikey}{query}&tomatoes={_rottenTomatoesRatings}").ConfigureAwait(false);
+                var response = await client
+                    .GetAsync($"{BaseUrl}apikey={_apikey}{query}&tomatoes={_rottenTomatoesRatings}")
+                    .ConfigureAwait(false);
             
                 if (!response.IsSuccessStatusCode)
                 {
@@ -148,14 +230,24 @@ namespace OMDbApiNet
         
         private Episode GetEpisode(string seriesId, string seriesTitle, uint seasonNumber, uint episodeNumber)
         {
-            if (seasonNumber == 0 || episodeNumber == 0)
+            if (seasonNumber == 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("Season number has to be greater than zero.", nameof(seasonNumber));
+            }
+            if (episodeNumber == 0)
+            {
+                throw new ArgumentOutOfRangeException("Episode number has to be greater than zero.", nameof(episodeNumber));
             }
 
             var query = GetSeasonEpisodeQuery(seriesId, seriesTitle, seasonNumber, episodeNumber);
             
             var episode = GetOmdbData<Episode>(query).Result;
+            
+            if (episode.Response.Equals("False"))
+            {
+                throw new HttpRequestException(episode.Error);
+            }
+            
             return episode;
         }
 
@@ -163,12 +255,18 @@ namespace OMDbApiNet
         {
             if (seasonNumber == 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("Season number has to be greater than zero.", nameof(seasonNumber));
             }
 
             var query = GetSeasonEpisodeQuery(seriesId, seriesTitle, seasonNumber, null);
             
             var season = GetOmdbData<Season>(query).Result;
+            
+            if (season.Response.Equals("False"))
+            {
+                throw new HttpRequestException(season.Error);
+            }
+            
             return season;
         }
 

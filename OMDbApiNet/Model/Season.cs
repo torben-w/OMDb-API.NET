@@ -37,5 +37,8 @@ namespace OMDbApiNet.Model
         
         [JsonProperty("Response")]
         public string Response { get; set; }
+        
+        [JsonProperty("Error")]
+        public string Error { get; set; }
     }
 }

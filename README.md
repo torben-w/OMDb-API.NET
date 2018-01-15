@@ -32,8 +32,8 @@ You can get an api key on the [OMDb website](http://www.omdbapi.com/).
     var item = omdb.GetItemByTitle("title", OmdbType.Movie, 2017, true);
 
     // Item GetItemById(string id, bool fullPlot = false);
-    var item = omdb.GetItemByOd("imdb_id");
-    var item = omdb.GetItemByOd("imdb_id", true);
+    var item = omdb.GetItemById("imdb_id");
+    var item = omdb.GetItemById("imdb_id", true);
 ```
 You can get the type of an item with `item.Type`. `item.Type` can either be `"movie"`, `"series"` or `"episode"`. 
 For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()` or `GetEpisodeByEpisodeId()` instead.

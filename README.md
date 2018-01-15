@@ -1,6 +1,6 @@
 # OMDb-API.NET
-OMDb-API.NET is a .NET Standard 2.0 API for the [Open Movie Database](http://www.omdbapi.com/), 
-a webservice to obtain movie information as found on IMDb. 
+OMDb-API.NET is a .NET Standard 2.0 (C#) API  for the [Open Movie Database](http://www.omdbapi.com/), 
+a web service to obtain movie information as found on IMDb. 
 
 ## Usage ##
 

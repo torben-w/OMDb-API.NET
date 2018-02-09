@@ -33,12 +33,12 @@ namespace OMDbApiNet
             return GetItemByTitle(title, type, null, fullPlot);
         }
 
-        public Item GetItemByTitle(string title, uint? year, bool fullPlot = false)
+        public Item GetItemByTitle(string title, int? year, bool fullPlot = false)
         {
             return GetItemByTitle(title, OmdbType.None, year, fullPlot);
         }
 
-        public Item GetItemByTitle(string title, OmdbType type, uint? year, bool fullPlot = false)
+        public Item GetItemByTitle(string title, OmdbType type, int? year, bool fullPlot = false)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -52,8 +52,15 @@ namespace OMDbApiNet
             
             if (year != null)
             {
-                query += $"&y={year}";
-            }
+                if (year > 1800)
+                {
+                    query += $"&y={year}";
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Year has to be greater than 1800.", nameof(year));
+                }
+            } 
             
             if (type != OmdbType.None)
             {
@@ -88,29 +95,29 @@ namespace OMDbApiNet
             return item;
         }
 
-        public SearchList GetSearchList(string query, uint page = 1)
+        public SearchList GetSearchList(string query, int page = 1)
         {
             return GetSearchList(null, query, OmdbType.None, page);
         }
         
-        public SearchList GetSearchList(string query, OmdbType type, uint page = 1)
+        public SearchList GetSearchList(string query, OmdbType type, int page = 1)
         {
             return GetSearchList(null, query, type, page);
         }
 
-        public SearchList GetSearchList(uint? year, string query, uint page = 1U)
+        public SearchList GetSearchList(int? year, string query, int page = 1)
         {
             return GetSearchList(year, query, OmdbType.None, page);
         }
 
-        public SearchList GetSearchList(uint? year, string query, OmdbType type, uint page = 1U)
+        public SearchList GetSearchList(int? year, string query, OmdbType type, int page = 1)
         {
             if (string.IsNullOrWhiteSpace(query))
             {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(query));
             }
             
-            if (page == 0)
+            if (page <= 0)
             {
                 throw new ArgumentOutOfRangeException("Page has to be greater than zero.", nameof(page));
             }
@@ -124,7 +131,14 @@ namespace OMDbApiNet
 
             if (year != null)
             {
-                editedQuery += $"&y={year}";
+                if (year > 1800)
+                {
+                    editedQuery += $"&y={year}";
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Year has to be greater than 1800.", nameof(year));
+                }
             }
 
             var searchList = GetOmdbData<SearchList>(editedQuery).Result;
@@ -137,7 +151,7 @@ namespace OMDbApiNet
             return searchList;
         }
 
-        public Episode GetEpisodeBySeriesId(string seriesId, uint seasonNumber, uint episodeNumber)
+        public Episode GetEpisodeBySeriesId(string seriesId, int seasonNumber, int episodeNumber)
         {
             if (string.IsNullOrWhiteSpace(seriesId))
             {
@@ -147,7 +161,7 @@ namespace OMDbApiNet
             return GetEpisode(seriesId, null, seasonNumber, episodeNumber);
         }
 
-        public Episode GetEpisodeBySeriesTitle(string seriesTitle, uint seasonNumber, uint episodeNumber)
+        public Episode GetEpisodeBySeriesTitle(string seriesTitle, int seasonNumber, int episodeNumber)
         {
             if (string.IsNullOrWhiteSpace(seriesTitle))
             {
@@ -174,7 +188,7 @@ namespace OMDbApiNet
             return episode;
         }
 
-        public Season GetSeasonBySeriesId(string seriesId, uint seasonNumber)
+        public Season GetSeasonBySeriesId(string seriesId, int seasonNumber)
         {
             if (string.IsNullOrWhiteSpace(seriesId))
             {
@@ -184,7 +198,7 @@ namespace OMDbApiNet
             return GetSeason(seriesId, null, seasonNumber);
         }
         
-        public Season GetSeasonBySeriesTitle(string seriesTitle, uint seasonNumber)
+        public Season GetSeasonBySeriesTitle(string seriesTitle, int seasonNumber)
         {
             if (string.IsNullOrWhiteSpace(seriesTitle))
             {
@@ -228,13 +242,13 @@ namespace OMDbApiNet
             }
         }
         
-        private Episode GetEpisode(string seriesId, string seriesTitle, uint seasonNumber, uint episodeNumber)
+        private Episode GetEpisode(string seriesId, string seriesTitle, int seasonNumber, int episodeNumber)
         {
-            if (seasonNumber == 0)
+            if (seasonNumber <= 0)
             {
                 throw new ArgumentOutOfRangeException("Season number has to be greater than zero.", nameof(seasonNumber));
             }
-            if (episodeNumber == 0)
+            if (episodeNumber <= 0)
             {
                 throw new ArgumentOutOfRangeException("Episode number has to be greater than zero.", nameof(episodeNumber));
             }
@@ -251,9 +265,9 @@ namespace OMDbApiNet
             return episode;
         }
 
-        private Season GetSeason(string seriesId, string seriesTitle, uint seasonNumber)
+        private Season GetSeason(string seriesId, string seriesTitle, int seasonNumber)
         {
-            if (seasonNumber == 0)
+            if (seasonNumber <= 0)
             {
                 throw new ArgumentOutOfRangeException("Season number has to be greater than zero.", nameof(seasonNumber));
             }
@@ -270,7 +284,7 @@ namespace OMDbApiNet
             return season;
         }
 
-        private static string GetSeasonEpisodeQuery(string seriesId, string seriesTitle, uint seasonNumber, uint? episodeNumber)
+        private static string GetSeasonEpisodeQuery(string seriesId, string seriesTitle, int seasonNumber, int? episodeNumber)
         {
             string query;
 

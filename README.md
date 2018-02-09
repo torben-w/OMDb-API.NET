@@ -23,11 +23,11 @@ You can get an api key on the [OMDb website](http://www.omdbapi.com/).
     var item = omdb.GetItemByTitle("title", OmdbType.Movie);
     var item = omdb.GetItemByTitle("title", OmdbType.Series, true);
     
-    // Item GetItemByTitle(string title, uint? year, bool fullPlot = false);
+    // Item GetItemByTitle(string title, int? year, bool fullPlot = false);
     var item = omdb.GetItemByTitle("title", 2017);
     var item = omdb.GetItemByTitle("title", 2017, true);
     
-    // Item GetItemByTitle(string title, OmdbType type, uint? year, bool fullPlot = false);
+    // Item GetItemByTitle(string title, OmdbType type, int? year, bool fullPlot = false);
     var item = omdb.GetItemByTitle("title", OmdbType.Series, 2017);
     var item = omdb.GetItemByTitle("title", OmdbType.Movie, 2017, true);
 
@@ -40,10 +40,10 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
 
 ### Get an Episode ###
 ```cs
-    // Episode GetEpisodeBySeriesId(string seriesId, uint seasonNumber, uint episodeNumber);
+    // Episode GetEpisodeBySeriesId(string seriesId, int seasonNumber, int episodeNumber);
     var episode = omdb.GetEpisodeBySeriesId("imdb_series_id", 1, 1);
     
-    // Episode GetEpisodeBySeriesTitle(string seriesTitle, uint seasonNumber, uint episodeNumber);
+    // Episode GetEpisodeBySeriesTitle(string seriesTitle, int seasonNumber, int episodeNumber);
     var episode = omdb.GetEpisodeBySeriesTitle("imdb_series_title", 1, 1);
     
     // Episode GetEpisodeByEpisodeId(string episodeId);
@@ -52,28 +52,28 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
 
 ### Get a Season ###
 ```cs
-    // Season GetSeasonBySeriesId(string seriesId, uint seasonNumber);
+    // Season GetSeasonBySeriesId(string seriesId, int seasonNumber);
     var season = omdb.GetSeasonBySeriesId("imdb_series_id", 1);
     
-    // Season GetSeasonBySeriesTitle(string seriesTitle, uint seasonNumber);
+    // Season GetSeasonBySeriesTitle(string seriesTitle, int seasonNumber);
     var season = omdb.GetSeasonBySeriesTitle("imdb_series_title", 1);
 ```
 
 ### Get Search Results (movies and series) ###
 ```cs
-    // SearchList GetSearchList(string query, uint page = 1);
+    // SearchList GetSearchList(string query, int page = 1);
     var searchList = omdb.GetSearchList("query");
     var searchList = omdb.GetSearchList("query", 2);
     
-    // SearchList GetSearchList(string query, OmdbType type, uint page = 1);
+    // SearchList GetSearchList(string query, OmdbType type, int page = 1);
     var searchList = omdb.GetSearchList("query", OmdbType.Movie);
     var searchList = omdb.GetSearchList("query", OmdbType.Series, 2);
     
-    // SearchList GetSearchList(uint? year, string query, uint page = 1);
+    // SearchList GetSearchList(int? year, string query, int page = 1);
     var searchList = omdb.GetSearchList(2017, "query");
     var searchList = omdb.GetSearchList(2017, "query", 2);
     
-    // SearchList GetSearchList(uint? year, string query, OmdbType type, uint page = 1);
+    // SearchList GetSearchList(int? year, string query, OmdbType type, int page = 1);
     var searchList = omdb.GetSearchList(2017, "query", OmdbType.Movie);
     var searchList = omdb.GetSearchList(2017, "query", OmdbType.Series, 2);
 ```

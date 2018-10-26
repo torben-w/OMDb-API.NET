@@ -1,8 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Version>1.1.0</Version>
+    <Authors>torben-w</Authors>
+    <Company />
+    <Description>OMDbApiNet is a .NET Standard 2.0 API (REST client) for the Open Movie Database (http://www.omdbapi.com/) to obtain IMDb data.</Description>
+    <Copyright>torben-w</Copyright>
+    <PackageLicenseUrl>https://github.com/torben-w/OMDb-API.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/torben-w/OMDb-API.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/torben-w/OMDb-API.NET</RepositoryUrl>
+    <PackageTags>omdb api rest client net movie tv series imdb</PackageTags>
+    <PackageId>OmdbApiNet</PackageId>
+    <Product>OmdbApiNet</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,5 @@
 # OMDb-API.NET
-OMDb-API.NET is a .NET Standard 2.0 (C#) API  for the [Open Movie Database](http://www.omdbapi.com/), 
-a web service to obtain movie information as found on IMDb. 
+OMDb-API.NET is a .NET Standard 2.0 (C#) REST client for the [Open Movie Database API](http://www.omdbapi.com/), a web service to obtain movie information as found on IMDb.
 
 ## Usage ##
 
@@ -35,7 +34,7 @@ You can get an api key on the [OMDb website](http://www.omdbapi.com/).
     var item = omdb.GetItemById("imdb_id");
     var item = omdb.GetItemById("imdb_id", true);
 ```
-You can get the type of an item with `item.Type`. `item.Type` can either be `"movie"`, `"series"` or `"episode"`. 
+You can get the type of an item with `item.Type`. `item.Type` can either be `"movie"`, `"series"` or `"episode"`.
 For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()` or `GetEpisodeByEpisodeId()` instead.
 
 ### Get an Episode ###
@@ -77,4 +76,4 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
     var searchList = omdb.GetSearchList(2017, "query", OmdbType.Movie);
     var searchList = omdb.GetSearchList(2017, "query", OmdbType.Series, 2);
 ```
-The query can contain whitespaces. 
+The query can contain whitespaces.

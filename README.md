@@ -1,5 +1,10 @@
 # OMDb-API.NET
+[![NuGet](https://img.shields.io/nuget/v/OmdbApiNet.svg)](https://www.nuget.org/packages/OmdbApiNet/)
+
 OMDb-API.NET is a .NET Standard 2.0 (C#) REST client for the [Open Movie Database API](http://www.omdbapi.com/), a web service to obtain movie information as found on IMDb.
+
+## Installation ##
+Choose a version on [nuget.org](https://www.nuget.org/packages/OmdbApiNet/) and use it for your project.
 
 ## Usage ##
 

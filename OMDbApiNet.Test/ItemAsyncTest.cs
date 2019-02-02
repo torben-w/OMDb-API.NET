@@ -5,16 +5,16 @@ using OMDbApiNet;
 
 namespace TestOmdbApiNet
 {
-    /*
+	/*
      * Data in these unit tests last checked on 02/02/2019 (American date format).
      */
-    public class ItemTest
-    {
-        [Fact]
-        public void TestGetItemByTitleGood1()
+	public class ItemAsyncTest
+	{
+		[Fact]
+        public async void TestGetItemByTitleGood1()
         {
-            var omdb = new OmdbClient(TestData.apikey);
-            var movie = omdb.GetItemByTitle("Star Wars", true);
+            var omdb = new AsyncOmdbClient(TestData.apikey);
+            var movie = await omdb.GetItemByTitleAsync("Star Wars", true);
             
             var ratings = movie.Ratings.ToArray();
             Assert.Equal("Internet Movie Database", ratings[0].Source);
@@ -40,10 +40,10 @@ namespace TestOmdbApiNet
         }
         
         [Fact]
-        public void TestGetItemByTitleGood2()
+        public async void TestGetItemByTitleGood2()
         {
-            var omdb = new OmdbClient(TestData.apikey, true);
-            var movie = omdb.GetItemByTitle("Star Wars", OmdbType.Movie, 2017, false);
+            var omdb = new AsyncOmdbClient(TestData.apikey, true);
+            var movie = await omdb.GetItemByTitleAsync("Star Wars", OmdbType.Movie, 2017, false);
             
             var ratings = movie.Ratings.ToArray();
             Assert.Equal("Internet Movie Database", ratings[0].Source);
@@ -66,10 +66,10 @@ namespace TestOmdbApiNet
         }
         
         [Fact]
-        public void TestGetItemByTitleGood3()
+        public async void TestGetItemByTitleGood3()
         {
-            var omdb = new OmdbClient(TestData.apikey, true);
-            var movie = omdb.GetItemByTitle("Arrow", OmdbType.Series, 2012, false);
+            var omdb = new AsyncOmdbClient(TestData.apikey, true);
+            var movie = await omdb.GetItemByTitleAsync("Arrow", OmdbType.Series, 2012, false);
             
             var ratings = movie.Ratings.ToArray();
             Assert.Equal("Internet Movie Database", ratings[0].Source);
@@ -91,20 +91,20 @@ namespace TestOmdbApiNet
         }
         
         [Fact]
-        public void TestGetItemByTitleBad()
+        public async void TestGetItemByTitleBad()
         {
-            var omdb = new OmdbClient(TestData.apikey, true);
-            Assert.Throws<ArgumentException>(() => omdb.GetItemByTitle(null));
-            Assert.Throws<ArgumentException>(() => omdb.GetItemByTitle(""));
-            Assert.Throws<ArgumentException>(() => omdb.GetItemByTitle(" "));
-            Assert.Throws<ArgumentOutOfRangeException>(() => omdb.GetItemByTitle("star wars", 1500));
+            var omdb = new AsyncOmdbClient(TestData.apikey, true);
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetItemByTitleAsync(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetItemByTitleAsync(""));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetItemByTitleAsync(" "));
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => omdb.GetItemByTitleAsync("star wars", 1500));
         }
         
         [Fact]
-        public void TestGetItemByIdGood()
+        public async void TestGetItemByIdGood()
         {
-            var omdb = new OmdbClient(TestData.apikey);
-            var movie = omdb.GetItemById("tt0076759", true);
+            var omdb = new AsyncOmdbClient(TestData.apikey);
+            var movie = await omdb.GetItemByIdAsync("tt0076759", true);
             
             var ratings = movie.Ratings.ToArray();
             Assert.Equal("Internet Movie Database", ratings[0].Source);
@@ -129,14 +129,14 @@ namespace TestOmdbApiNet
         }
 
         [Fact]
-        public void TestGetItemByIdBad()
+        public async void TestGetItemByIdBad()
         {
-            var omdb = new OmdbClient(TestData.apikey);
-            Assert.Throws<ArgumentException>(() => omdb.GetItemById(null));
-            Assert.Throws<ArgumentException>(() => omdb.GetItemById(""));
-            Assert.Throws<ArgumentException>(() => omdb.GetItemById(" "));
+            var omdb = new AsyncOmdbClient(TestData.apikey);
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetItemByIdAsync(null));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetItemByIdAsync(""));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetItemByIdAsync(" "));
             
-            Assert.Throws<HttpRequestException>(() => omdb.GetItemById("wrongID"));
+            await Assert.ThrowsAsync<HttpRequestException>(() => omdb.GetItemByIdAsync("wrongID"));
         }
-    }
+	}
 }

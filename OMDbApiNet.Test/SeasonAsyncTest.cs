@@ -1,20 +1,20 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using Xunit;
 using OMDbApiNet;
 
 namespace TestOmdbApiNet
 {
-    /*
+	/*
      * Data in these unit tests last checked on 02/02/2019 (American date format).
      */
-    public class SeasonTest
-    {
-        [Fact]
-        public void TestGetSeasonBySeriesIdGood()
+	public class SeasonAsyncTest
+	{
+		[Fact]
+        public async void TestGetSeasonBySeriesIdGood()
         {
-            var omdb = new OmdbClient(TestData.apikey);
-            var season = omdb.GetSeasonBySeriesId("tt2193021", 1);
+            var omdb = new AsyncOmdbClient(TestData.apikey);
+            var season = await omdb.GetSeasonBySeriesIdAsync("tt2193021", 1);
             
             var episodes = season.Episodes.ToArray();
             Assert.Equal("Pilot", episodes[0].Title);
@@ -38,26 +38,26 @@ namespace TestOmdbApiNet
         }
         
         [Fact]
-        public void TestGetSeasonBySeriesIdBad()
+        public async void TestGetSeasonBySeriesIdBad()
         {
-            var omdb = new OmdbClient(TestData.apikey);
+            var omdb = new AsyncOmdbClient(TestData.apikey);
             
-            Assert.Throws<ArgumentException>(() => omdb.GetSeasonBySeriesId(null, 1));
-            Assert.Throws<ArgumentException>(() => omdb.GetSeasonBySeriesId("", 1));
-            Assert.Throws<ArgumentException>(() => omdb.GetSeasonBySeriesId(" ", 1));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetSeasonBySeriesIdAsync(null, 1));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetSeasonBySeriesIdAsync("", 1));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetSeasonBySeriesIdAsync(" ", 1));
             
-            Assert.Throws<ArgumentOutOfRangeException>(() => omdb.GetSeasonBySeriesId("tt2193021", 0));  
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => omdb.GetSeasonBySeriesIdAsync("tt2193021", 0));  
                  
-            Assert.Throws<HttpRequestException>(() => omdb.GetSeasonBySeriesId("asdf", 1));
-            Assert.Throws<HttpRequestException>(() => omdb.GetSeasonBySeriesId("tt2193021", 100));
+            await Assert.ThrowsAsync<HttpRequestException>(() => omdb.GetSeasonBySeriesIdAsync("asdf", 1));
+            await Assert.ThrowsAsync<HttpRequestException>(() => omdb.GetSeasonBySeriesIdAsync("tt2193021", 100));
         }
         
                 
         [Fact]
-        public void TestGetSeasonBySeriesTitleGood()
+        public async void TestGetSeasonBySeriesTitleGood()
         {
-            var omdb = new OmdbClient(TestData.apikey);
-            var season = omdb.GetSeasonBySeriesTitle("arrow", 1);
+            var omdb = new AsyncOmdbClient(TestData.apikey);
+            var season = await omdb.GetSeasonBySeriesTitleAsync("arrow", 1);
             
             var episodes = season.Episodes.ToArray();
             Assert.Equal("Pilot", episodes[0].Title);
@@ -81,18 +81,18 @@ namespace TestOmdbApiNet
         }
         
         [Fact]
-        public void TestGetSeasonBySeriesTitleBad()
+        public async void TestGetSeasonBySeriesTitleBad()
         {
-            var omdb = new OmdbClient(TestData.apikey);
+            var omdb = new AsyncOmdbClient(TestData.apikey);
             
-            Assert.Throws<ArgumentException>(() => omdb.GetSeasonBySeriesTitle(null, 1));
-            Assert.Throws<ArgumentException>(() => omdb.GetSeasonBySeriesTitle("", 1));
-            Assert.Throws<ArgumentException>(() => omdb.GetSeasonBySeriesTitle(" ", 1));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetSeasonBySeriesTitleAsync(null, 1));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetSeasonBySeriesTitleAsync("", 1));
+            await Assert.ThrowsAsync<ArgumentException>(() => omdb.GetSeasonBySeriesTitleAsync(" ", 1));
             
-            Assert.Throws<ArgumentOutOfRangeException>(() => omdb.GetSeasonBySeriesTitle("tt2193021", 0));  
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => omdb.GetSeasonBySeriesTitleAsync("tt2193021", 0));  
                  
-            Assert.Throws<HttpRequestException>(() => omdb.GetSeasonBySeriesTitle("asdf", 1));
-            Assert.Throws<HttpRequestException>(() => omdb.GetSeasonBySeriesTitle("arrow", 100));
+            await Assert.ThrowsAsync<HttpRequestException>(() => omdb.GetSeasonBySeriesTitleAsync("asdf", 1));
+            await Assert.ThrowsAsync<HttpRequestException>(() => omdb.GetSeasonBySeriesTitleAsync("arrow", 100));
         }
-    }
+	}
 }

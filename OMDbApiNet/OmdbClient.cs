@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using OMDbApiNet.Model;
+using OMDbApiNet.Utilities;
 
 namespace OMDbApiNet
 {
@@ -40,34 +41,9 @@ namespace OMDbApiNet
 
         public Item GetItemByTitle(string title, OmdbType type, int? year, bool fullPlot = false)
         {
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(title));
-            }
+            var query = QueryBuilder.GetItemByTitleQuery(title, type, year, fullPlot);
 
-            var editedTitle = Regex.Replace(title, @"\s+", "+");
-            var plot = fullPlot ? "full" : "short";
-
-            var query = $"&t={editedTitle}&plot={plot}";
-            
-            if (year != null)
-            {
-                if (year > 1800)
-                {
-                    query += $"&y={year}";
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException("Year has to be greater than 1800.", nameof(year));
-                }
-            } 
-            
-            if (type != OmdbType.None)
-            {
-                query += $"&type={type.ToString()}";
-            }
-
-            var item = GetOmdbData<Item>(query).Result;
+            var item = GetOmdbDataAsync<Item>(query).Result;
 
             if (item.Response.Equals("False"))
             {
@@ -79,13 +55,9 @@ namespace OMDbApiNet
 
         public Item GetItemById(string id, bool fullPlot = false)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(id));
-            }
+            var query = QueryBuilder.GetItemByIdQuery(id, fullPlot);
             
-            var plot = fullPlot ? "full" : "short";
-            var item = GetOmdbData<Item>($"&i={id}&plot={plot}").Result;
+            var item = GetOmdbDataAsync<Item>(query).Result;
             
             if (item.Response.Equals("False"))
             {
@@ -112,36 +84,9 @@ namespace OMDbApiNet
 
         public SearchList GetSearchList(int? year, string query, OmdbType type, int page = 1)
         {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(query));
-            }
-            
-            if (page <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Page has to be greater than zero.", nameof(page));
-            }
+            var editedQuery = QueryBuilder.GetSearchListQuery(year, query, type, page);
 
-            var editedQuery = $"&s={Regex.Replace(query, @"\s+", "+")}&page={page}";
-            
-            if (type != OmdbType.None)
-            {
-                editedQuery += $"&type={type.ToString()}";
-            }
-
-            if (year != null)
-            {
-                if (year > 1800)
-                {
-                    editedQuery += $"&y={year}";
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException("Year has to be greater than 1800.", nameof(year));
-                }
-            }
-
-            var searchList = GetOmdbData<SearchList>(editedQuery).Result;
+            var searchList = GetOmdbDataAsync<SearchList>(editedQuery).Result;
             
             if (searchList.Response.Equals("False"))
             {
@@ -173,12 +118,9 @@ namespace OMDbApiNet
 
         public Episode GetEpisodeByEpisodeId(string episodeId)
         {
-            if (string.IsNullOrWhiteSpace(episodeId))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(episodeId));
-            }
-
-            var episode = GetOmdbData<Episode>($"&i={episodeId}").Result;
+            var query = QueryBuilder.GetEpisodeByEpisodeIdQuery(episodeId);
+            
+            var episode = GetOmdbDataAsync<Episode>(query).Result;
             
             if (episode.Response.Equals("False"))
             {
@@ -212,7 +154,7 @@ namespace OMDbApiNet
         
         #region Internal
 
-        private async Task<T> GetOmdbData<T>(string query)
+        private async Task<T> GetOmdbDataAsync<T>(string query)
         {
             using (var client = new HttpClient {BaseAddress = new Uri(BaseUrl)})
             {
@@ -255,7 +197,7 @@ namespace OMDbApiNet
 
             var query = GetSeasonEpisodeQuery(seriesId, seriesTitle, seasonNumber, episodeNumber);
             
-            var episode = GetOmdbData<Episode>(query).Result;
+            var episode = GetOmdbDataAsync<Episode>(query).Result;
             
             if (episode.Response.Equals("False"))
             {
@@ -274,7 +216,7 @@ namespace OMDbApiNet
 
             var query = GetSeasonEpisodeQuery(seriesId, seriesTitle, seasonNumber, null);
             
-            var season = GetOmdbData<Season>(query).Result;
+            var season = GetOmdbDataAsync<Season>(query).Result;
             
             if (season.Response.Equals("False"))
             {

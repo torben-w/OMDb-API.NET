@@ -2,13 +2,6 @@
 
 namespace OMDbApiNet
 {
-    public enum OmdbType
-    {
-        None,
-        Movie,
-        Series
-    }
-    
     public interface IOmdbClient
     {
         Item GetItemByTitle(string title, bool fullPlot = false);

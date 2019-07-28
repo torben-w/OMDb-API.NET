@@ -3,26 +3,30 @@
 
 OMDb-API.NET is a .NET Standard 2.0 (C#) REST client for the [Open Movie Database API](http://www.omdbapi.com/), a web service to obtain movie information as found on IMDb.
 
-## Installation ##
+## Installation
 Choose a version on [nuget.org](https://www.nuget.org/packages/OmdbApiNet/) and use it for your project.
 
-## Usage ##
+## Usage
 There is a synchronous client `OmdbClient` and a asynchronous client `AsyncOmdbClient`. The asynchronous client provides the same methods as the synchronous one. The only differences are that you have to append `Async` to the method name and they will return Tasks, so that they are awaitable:
 ```cs
     Item item = await omdb.GetItemByTitleAsync("title");
 ```
 
 
-### Create OMDb Client ###
+### Create an OMDb Client
 ```cs
     OmdbClient omdb = new OmdbClient("your_apikey");
     
     // enable ratings from Rotten Tomatoes
     OmdbClient omdb = new OmdbClient("your_apikey", true);
+
+    // Asynchronous client
+    AsyncOmdbClient omdb = new AsyncOmdbClient("your_apikey");
 ```
 You can get an api key on the [OMDb website](http://www.omdbapi.com/).
 
-### Get an Item (movie or series) ###
+### Get an Item (movie, series or game)
+Games (`OmdbType.Game`) can only be requested by Id, *not* by title. This is due to restrictions of the [Open Movie Database API](http://www.omdbapi.com/) and can't be fixed on the client side.
 ```cs
     // Item GetItemByTitle(string title, bool fullPlot = false);
     Item item = omdb.GetItemByTitle("title");
@@ -47,7 +51,7 @@ You can get an api key on the [OMDb website](http://www.omdbapi.com/).
 You can get the type of an item with `item.Type`. `item.Type` can either be `"movie"`, `"series"` or `"episode"`.
 For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()` or `GetEpisodeByEpisodeId()` instead.
 
-### Get an Episode ###
+### Get an Episode
 ```cs
     // Episode GetEpisodeBySeriesId(string seriesId, int seasonNumber, int episodeNumber);
     Episode episode = omdb.GetEpisodeBySeriesId("imdb_series_id", 1, 1);
@@ -59,7 +63,7 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
     Episode episode = omdb.GetEpisodeByEpisodeId("imdb_id");
 ```
 
-### Get a Season ###
+### Get a Season
 ```cs
     // Season GetSeasonBySeriesId(string seriesId, int seasonNumber);
     Season season = omdb.GetSeasonBySeriesId("imdb_series_id", 1);
@@ -68,7 +72,7 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
     Season season = omdb.GetSeasonBySeriesTitle("imdb_series_title", 1);
 ```
 
-### Get Search Results (movies and series) ###
+### Get Search Results (movies, series or game)
 ```cs
     // SearchList GetSearchList(string query, int page = 1);
     SearchList searchList = omdb.GetSearchList("query");
@@ -77,6 +81,7 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
     // SearchList GetSearchList(string query, OmdbType type, int page = 1);
     SearchList searchList = omdb.GetSearchList("query", OmdbType.Movie);
     SearchList searchList = omdb.GetSearchList("query", OmdbType.Series, 2);
+    SearchList searchList = omdb.GetSearchList("query", OmdbType.Game);
     
     // SearchList GetSearchList(int? year, string query, int page = 1);
     SearchList searchList = omdb.GetSearchList(2017, "query");
@@ -85,5 +90,6 @@ For getting an episode use `GetEpisodeBySeriesId()`, `GetEpisodeBySeriesTitle()`
     // SearchList GetSearchList(int? year, string query, OmdbType type, int page = 1);
     SearchList searchList = omdb.GetSearchList(2017, "query", OmdbType.Movie);
     SearchList searchList = omdb.GetSearchList(2017, "query", OmdbType.Series, 2);
+    SearchList searchList = omdb.GetSearchList(2017, "query", OmdbType.Game);
 ```
 The query can contain whitespaces.

@@ -27,12 +27,27 @@ namespace TestOmdbApiNet
 			Assert.Equal("tt0115759", search[1].ImdbId);
 			Assert.Equal("movie", search[1].Type);
 
-			Assert.Equal("Green Arrow", search[5].Title);
-			Assert.Equal("2010", search[5].Year);
-			Assert.Equal("tt1663633", search[5].ImdbId);
-			Assert.Equal("movie", search[5].Type);
+			Assert.Null(searchList.Error);
+			Assert.Equal("True", searchList.Response);
+		}
+		
+		public async void TestGetSearchListGood2()
+		{
+			var omdb = new AsyncOmdbClient(TestData.apikey);
+			var searchList = await omdb.GetSearchListAsync("Skyrim", OmdbType.Game);
 
-			Assert.Equal(null, searchList.Error);
+			var search = searchList.SearchResults.ToArray();
+			Assert.Equal("The Elder Scrolls V: Skyrim", search[0].Title);
+			Assert.Equal("2011", search[0].Year);
+			Assert.Equal("tt1814884", search[0].ImdbId);
+			Assert.Equal("game", search[0].Type);
+            
+			Assert.Equal("The Elder Scrolls V: Skyrim - Dawnguard", search[1].Title);
+			Assert.Equal("2012", search[1].Year);
+			Assert.Equal("tt5333506", search[1].ImdbId);
+			Assert.Equal("game", search[1].Type);
+
+			Assert.Null(searchList.Error);
 			Assert.Equal("True", searchList.Response);
 		}
         

@@ -4,6 +4,7 @@ namespace OMDbApiNet
 	{
 		None,
 		Movie,
-		Series
+		Series,
+		Game
 	}
 }

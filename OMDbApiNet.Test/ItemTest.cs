@@ -35,7 +35,7 @@ namespace TestOmdbApiNet
             Assert.Equal("21 Sep 2004", movie.Dvd);
             Assert.Equal("20th Century Fox", movie.Production);
             Assert.Equal("http://www.starwars.com/episode-iv/", movie.Website);
-            Assert.Equal(null, movie.TotalSeasons);
+            Assert.Null(movie.TotalSeasons);
             Assert.Equal("True", movie.Response);
         }
         
@@ -50,7 +50,7 @@ namespace TestOmdbApiNet
             Assert.Equal("Rotten Tomatoes", ratings[1].Source);
             Assert.Equal("Metacritic", ratings[2].Source);
             
-            Assert.Equal("Star Wars: Episode VIII - The Last Jedi", movie.Title);
+            Assert.Equal("Star Wars: The Last Jedi", movie.Title);
             Assert.Equal("2017", movie.Year);
             Assert.Equal("PG-13", movie.Rated);
             Assert.Equal("15 Dec 2017", movie.Released);
@@ -61,7 +61,7 @@ namespace TestOmdbApiNet
             Assert.Equal("movie", movie.Type);
             Assert.Equal("http://www.rottentomatoes.com/m/star_wars_episode_viii/", movie.TomatoUrl);
             Assert.Equal("Walt Disney Pictures", movie.Production);
-            Assert.Equal(null, movie.TotalSeasons);
+            Assert.Null(movie.TotalSeasons);
             Assert.Equal("True", movie.Response);
         }
         
@@ -100,6 +100,16 @@ namespace TestOmdbApiNet
             Assert.Throws<ArgumentOutOfRangeException>(() => omdb.GetItemByTitle("star wars", 1500));
         }
         
+        /// <summary>
+        /// Games can't be requested by title. See #2
+        /// </summary>
+        [Fact]
+        public void TestGetItemByTitleBad2()
+        {
+            var omdb = new OmdbClient(TestData.apikey, true);
+            Assert.Throws<HttpRequestException>(() => omdb.GetItemByTitle("Skyrim", OmdbType.Game));
+        }
+        
         [Fact]
         public void TestGetItemByIdGood()
         {
@@ -126,6 +136,19 @@ namespace TestOmdbApiNet
             Assert.Equal("20th Century Fox", movie.Production);
             Assert.Equal("http://www.starwars.com/episode-iv/", movie.Website);
             Assert.Equal("True", movie.Response);
+        }
+        
+        [Fact]
+        public void TestGetItemByIdGood2()
+        {
+            var omdb = new OmdbClient(TestData.apikey, true);
+            var game = omdb.GetItemById("tt1814884");
+            
+            Assert.Equal("The Elder Scrolls V: Skyrim", game.Title);
+            Assert.Equal("2011", game.Year);
+            Assert.Equal("N/A", game.Rated);
+            Assert.Equal("11 Nov 2011", game.Released);
+            Assert.Equal("N/A", game.Runtime);
         }
 
         [Fact]
